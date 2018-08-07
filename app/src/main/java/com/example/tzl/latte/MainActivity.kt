@@ -1,12 +1,11 @@
 package com.example.tzl.latte
 
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
+import com.example.tzl.latte_core.activities.ProxyActivity
+import com.example.tzl.latte_core.delegate.LatteDelegate
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ProxyActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun setRootDelegate(): LatteDelegate {
+        return ExampleDelegate()
     }
 }
