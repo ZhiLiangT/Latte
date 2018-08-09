@@ -1,5 +1,6 @@
 package com.example.tzl.latte_core.app
 
+import okhttp3.Interceptor
 import java.lang.RuntimeException
 import kotlin.collections.HashMap
 
@@ -9,15 +10,15 @@ import kotlin.collections.HashMap
 class Configurator private constructor() {
 
     companion object {
-        private var LATTE_CONFIGS=HashMap<String,Any>()
-
+        private var LATTE_CONFIGS=HashMap<Any,Any>()
+        private var INTERCEPTORS= ArrayList<Interceptor>()
         fun getInstance():Configurator{
             return Holder.INSTANCE
         }
     }
 
     init {
-        LATTE_CONFIGS[ConfigType.CONFIG_READY.name] = false
+        LATTE_CONFIGS[ConfigType.CONFIG_READY] = false
     }
 
     private  class Holder{
@@ -26,7 +27,7 @@ class Configurator private constructor() {
         }
     }
 
-    fun getLatteConfigs():HashMap<String,Any>{
+    fun getLatteConfigs():HashMap<Any,Any>{
         return LATTE_CONFIGS
     }
 
@@ -34,14 +35,26 @@ class Configurator private constructor() {
      * 初始化配置成功
      */
     fun configure(){
-        LATTE_CONFIGS[ConfigType.CONFIG_READY.name] = true
+        LATTE_CONFIGS[ConfigType.CONFIG_READY] = true
     }
 
     /**
      * 配置host地址
      */
     fun withApiHost(host:String):Configurator{
-        LATTE_CONFIGS[ConfigType.API_HOST.name]=host
+        LATTE_CONFIGS[ConfigType.API_HOST]=host
+        return this
+    }
+
+    fun withInterceptor(interceptor: Interceptor):Configurator{
+        INTERCEPTORS.add(interceptor)
+        Latte.getConfigurations()[ConfigType.INTERCEPTORS]= INTERCEPTORS
+        return this
+    }
+
+    fun withInterceptors(interceptors: ArrayList<Interceptor>):Configurator{
+        INTERCEPTORS.addAll(interceptors)
+        Latte.getConfigurations()[ConfigType.INTERCEPTORS]= INTERCEPTORS
         return this
     }
 
@@ -49,7 +62,7 @@ class Configurator private constructor() {
      * 检查是否配置完成，没有完成抛出异常
      */
     fun checkConfiguration(){
-        val isReady:Boolean= LATTE_CONFIGS[ConfigType.CONFIG_READY.name] as Boolean
+        val isReady:Boolean= LATTE_CONFIGS[ConfigType.CONFIG_READY] as Boolean
         if (!isReady){
             throw RuntimeException("Configuration in not ready,call configure ")
         }
@@ -58,6 +71,6 @@ class Configurator private constructor() {
     @SuppressWarnings("unchecked")
     fun getConfiguration(key :Enum<ConfigType>): Any? {
         checkConfiguration()
-        return LATTE_CONFIGS[key.name]
+        return LATTE_CONFIGS[key]
     }
 }

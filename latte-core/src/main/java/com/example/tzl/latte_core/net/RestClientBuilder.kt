@@ -4,8 +4,11 @@ import com.example.tzl.latte_core.net.callback.IError
 import com.example.tzl.latte_core.net.callback.IFailure
 import com.example.tzl.latte_core.net.callback.IRequest
 import com.example.tzl.latte_core.net.callback.ISuccess
+import com.example.tzl.latte_core.net.download.DownloadHandler
 import okhttp3.MediaType
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
+import java.io.File
 import java.util.*
 
 /**
@@ -18,7 +21,11 @@ class RestClientBuilder {
     private var mISuccess:ISuccess?=null
     private var mIError:IError?=null
     private var mIFailure:IFailure?=null
-    private var mBody: ResponseBody?=null
+    private var mBody: RequestBody?=null
+    private var mFile:File?=null
+    private var mDownloadDir:String?=null
+    private var mExtension:String?=null
+    private var mName:String?=null
 
     fun url(url:String):RestClientBuilder{
         this.mUrl=url
@@ -36,7 +43,7 @@ class RestClientBuilder {
     }
 
     fun raw(raw:String):RestClientBuilder{
-        this.mBody= ResponseBody.create(MediaType.parse("application.json;char=UTF-8"),raw)
+        this.mBody= RequestBody.create(MediaType.parse("application.json;char=UTF-8"),raw)
         return this
     }
 
@@ -45,6 +52,15 @@ class RestClientBuilder {
         return this
     }
 
+    fun file(file: File):RestClientBuilder{
+        this.mFile=file
+        return this
+    }
+
+    fun file(file: String):RestClientBuilder{
+        this.mFile=File(file)
+        return this
+    }
 
     fun success(isuccess:ISuccess):RestClientBuilder{
         this.mISuccess=isuccess
@@ -61,11 +77,32 @@ class RestClientBuilder {
         return this
     }
 
+    /**--------------------------------------download-------------------------------------------*/
+
+    fun downloadDir(downloadDir:String):RestClientBuilder{
+        this.mDownloadDir=downloadDir
+        return this
+    }
+
+    fun extention(extension:String):RestClientBuilder{
+        this.mExtension=extension
+        return this
+    }
+
+    fun name(name:String):RestClientBuilder{
+        this.mName=name
+        return this
+    }
+
+    fun download(){
+        DownloadHandler(mUrl,mDownloadDir,mExtension,mName,mIRequest,mISuccess,mIFailure,mIError).handlerDownload()
+    }
+
     fun build():RestClient{
         if (mUrl==null){
             throw RuntimeException("url can't be empty")
         }
-        return RestClient(mUrl,mParams,mIRequest,mISuccess,mIFailure,mIError,mBody)
+        return RestClient(mUrl,mParams,mDownloadDir,mExtension,mName,mIRequest,mISuccess,mIFailure,mIError,mBody,mFile)
     }
 
 }

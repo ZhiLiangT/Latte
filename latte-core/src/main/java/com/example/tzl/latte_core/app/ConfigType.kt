@@ -7,5 +7,6 @@ enum class ConfigType {
     API_HOST,               //通用域名
     APPLICATION_CONTEXT,    //全局上下文
     CONFIG_READY,           //初始化配置是否完成
-    ICON                    //字体初始化项目
+    ICON,                    //字体初始化项目
+    INTERCEPTORS            //拦截器
 }

@@ -6,15 +6,15 @@ import java.util.*
 object Latte {
 
     fun init(context: Context):Configurator{
-        getConfigurations()[ConfigType.APPLICATION_CONTEXT.name] = context.applicationContext
+        getConfigurations()[ConfigType.APPLICATION_CONTEXT] = context.applicationContext
         return Configurator.getInstance()
     }
 
-    fun getConfigurations():HashMap<String,Any>{
+    fun getConfigurations():HashMap<Any,Any>{
         return Configurator.getInstance().getLatteConfigs()
     }
 
     fun getApplication():Context{
-        return getConfigurations()[ConfigType.APPLICATION_CONTEXT.name] as Context
+        return getConfigurations()[ConfigType.APPLICATION_CONTEXT] as Context
     }
 }

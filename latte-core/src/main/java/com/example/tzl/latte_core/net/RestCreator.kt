@@ -2,11 +2,13 @@ package com.example.tzl.latte_core.net
 
 import com.example.tzl.latte_core.app.ConfigType
 import com.example.tzl.latte_core.app.Latte
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 /**
  * Create by 田志亮 on 2018/8/5
@@ -24,7 +26,7 @@ class RestCreator{
 
     private class RetrofitHolder{
         companion object {
-            private var BASE_URL:String= Latte.getConfigurations()[ConfigType.API_HOST.name] as String
+            private var BASE_URL:String= Latte.getConfigurations()[ConfigType.API_HOST] as String
             var RETROFIT:Retrofit=Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(OHHttpHolder.OK_HTTP_CLIENT)
@@ -36,7 +38,17 @@ class RestCreator{
     class OHHttpHolder{
         companion object {
             private var TIME_OUT:Int=60
-            var OK_HTTP_CLIENT= OkHttpClient.Builder()
+            private var BUILDER=OkHttpClient.Builder()
+            private var INTERCEPTOR:ArrayList<Interceptor> = Latte.getConfigurations()[ConfigType.INTERCEPTORS] as ArrayList<Interceptor>
+            private fun addInterceptors():OkHttpClient.Builder{
+                if (!INTERCEPTOR.isEmpty()){
+                    for (interceptor in INTERCEPTOR){
+                        BUILDER.addInterceptor(interceptor)
+                    }
+                }
+                return BUILDER
+            }
+            var OK_HTTP_CLIENT= addInterceptors()
                     .connectTimeout(TIME_OUT.toLong(),TimeUnit.SECONDS)
                     .build()
         }
