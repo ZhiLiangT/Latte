@@ -2,6 +2,7 @@ package com.example.tzl.latte
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 
 import com.example.tzl.latte_core.net.RestClient
@@ -15,20 +16,21 @@ class TestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
         RestClient.builder()
-                .url("http://www.baidu.com")
+                .url("https://www.baidu.com/")
                 .success(object : ISuccess {
                     override fun onSuccess(response: String) {
+                        Log.i("Test","response$response")
                         Toast.makeText(this@TestActivity,response,Toast.LENGTH_SHORT).show()
                     }
                 })
                 .failure(object :IFailure{
                     override fun onFailure() {
-
+                        Log.i("Test","IFailure")
                     }
                 })
                 .error(object :IError{
                     override fun onError(code: Int, msg: String) {
-
+                        Log.i("Test","IError")
                     }
                 })
                 .build().get()

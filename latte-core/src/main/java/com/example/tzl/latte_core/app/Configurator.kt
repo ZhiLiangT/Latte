@@ -11,20 +11,17 @@ class Configurator private constructor() {
 
     companion object {
         private var LATTE_CONFIGS=HashMap<Any,Any>()
-        private var INTERCEPTORS= ArrayList<Interceptor>()
-        fun getInstance():Configurator{
-            return Holder.INSTANCE
-        }
+        private var INTERCEPTORS= mutableListOf<Interceptor>()
+        fun getInstance():Configurator=Holder.INSTANCE
     }
 
     init {
         LATTE_CONFIGS[ConfigType.CONFIG_READY] = false
     }
 
-    private  class Holder{
-        companion object {
-            var INSTANCE=Configurator()
-        }
+    /**单例*/
+    private  object Holder{
+        var INSTANCE=Configurator()
     }
 
     fun getLatteConfigs():HashMap<Any,Any>{

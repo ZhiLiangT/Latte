@@ -22,6 +22,7 @@ class RestClient(private val url: String?,
                  private val error: IError?,
                  private val body: RequestBody?,
                  private val file:File?) {
+
     private val PARAMS = RestCreator.getParams()
 
     init {

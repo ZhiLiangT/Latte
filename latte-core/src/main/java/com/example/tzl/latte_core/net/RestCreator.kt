@@ -29,20 +29,20 @@ class RestCreator{
             private var BASE_URL:String= Latte.getConfigurations()[ConfigType.API_HOST] as String
             var RETROFIT:Retrofit=Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .client(OHHttpHolder.OK_HTTP_CLIENT)
+                    .client(OKHttpHolder.OK_HTTP_CLIENT)
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .build()
         }
     }
 
-    class OHHttpHolder{
+    class OKHttpHolder{
         companion object {
             private var TIME_OUT:Int=60
             private var BUILDER=OkHttpClient.Builder()
-            private var INTERCEPTOR:ArrayList<Interceptor> = Latte.getConfigurations()[ConfigType.INTERCEPTORS] as ArrayList<Interceptor>
+            private var INTERCEPTOR :MutableList<Interceptor>?= Latte.getConfigurations()[ConfigType.INTERCEPTORS] as? MutableList<Interceptor>
             private fun addInterceptors():OkHttpClient.Builder{
-                if (!INTERCEPTOR.isEmpty()){
-                    for (interceptor in INTERCEPTOR){
+                if (INTERCEPTOR!=null){
+                    for (interceptor in INTERCEPTOR!!){
                         BUILDER.addInterceptor(interceptor)
                     }
                 }
